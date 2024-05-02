@@ -169,6 +169,7 @@ if __name__ in ['__builtin__','__main__']:
 wkdir = "E:/ML_Migration/tm_test"
 file = File("/Users/ktrang/Documents/tm_test/A2_1.xml")
 imp = IJ.openImage("E:/ML_Migration/tm_test/A2_1_short.tif")
+imp = IJ.openImage("E:/ML_Migration/tm_test/A2_1.tif")
 imp.show()
 IJ.run("Set Scale...", "distance=2016 known=1791 unit=um global")
 
@@ -180,16 +181,19 @@ def findUnderSD(model, settings, featureName):
 	for id in model.getTrackModel().trackIDs(True):
 		featureVal = fm.getTrackFeature(id, featureName)
 		feature = feature + featureVal
-	meanFeature = feature/numTracks
+		#print("TrackID: %d, %s: %d" % (id, featureName, featureVal))
+		meanFeature = feature/numTracks
 	SS = 0
 	for id in model.getTrackModel().trackIDs(True):
 		featureVal = fm.getTrackFeature(id, featureName)
 		SS = SS + (featureVal-meanFeature)*(featureVal-meanFeature)
-		# SS = SS + (getResult("Mean", i)-meanIntensity)*(getResult("Mean", i)-meanIntensity)
 	sd = math.sqrt(abs(SS)/(numTracks-1))
+	#print(meanFeature)
+	#print(sd)
 	for id in model.getTrackModel().trackIDs(True):
 		featureVal = fm.getTrackFeature(id, featureName)
 		if(featureVal < meanFeature-2*sd):	
+			print(featureVal)
 			trackIDsUnder.append(id)
 	return trackIDsUnder
 	
@@ -252,6 +256,10 @@ def findTrackingQuality(model, settings, maxFrameGap, altLinkCost, linkMax, gapC
 	tracksUnderQuality = findUnderSD(model, settings, "TRACK_MEAN_QUALITY")
 	tracksUnderLen = findUnderSD(model, settings, "TRACK_DURATION")
 	
+	print(tracksUnderDisp)
+	print(tracksUnderQuality)
+	print(tracksUnderLen)
+	
 	tracksUnder = list(set(tracksUnderDisp + tracksUnderQuality + tracksUnderLen))
 	for id in tracksUnder:
 		count = 0
@@ -270,7 +278,7 @@ def findTrackingQuality(model, settings, maxFrameGap, altLinkCost, linkMax, gapC
 	for id in model.getTrackModel().trackIDs(True):
 		tracksKept = tracksKept + 1
 		avgTrackQuality= avgTrackQuality + fm.getTrackFeature(id, 'TRACK_MEAN_QUALITY')
-		avgTrackLength= avgTrackLength + fm.getTrackFeature(id, 'TRACK_DISPLACEMENT')
+		avgTrackLength= avgTrackLength + fm.getTrackFeature(id, 'TRACK_DURATION')
 	avgTrackQuality = avgTrackQuality/tracksKept
 	avgTrackLength = avgTrackLength/tracksKept
 	model.getLogger().log('# of tracks kept: ' + str(tracksKept))
@@ -279,15 +287,23 @@ def findTrackingQuality(model, settings, maxFrameGap, altLinkCost, linkMax, gapC
 	trackingQuality = 0.2*tracksKept + 0.4*avgTrackQuality + 0.4*avgTrackLength
 	model.getLogger().log('Tracking quality: ' + str(trackingQuality))
 	model.beginUpdate()
+	toRemove = []
 	for id in model.getTrackModel().trackIDs(False):
-		track = model.getTrackModel().trackSpots(id).iterator()
-		while track.hasNext():
-			spot = track.next()
-			for edge in model.getTrackModel().edgesOf(spot):
-				model.removeEdge(edge)
+		if not model.getTrackModel().isVisible(id):
+			track = model.getTrackModel().trackSpots(id).iterator()
+			while track.hasNext():
+				spot = track.next()
+				edges = model.getTrackModel().edgesOf(spot).iterator()
+				while edges.hasNext():
+					edge = edges.next()
+					if edge not in toRemove:
+	   	 				toRemove.append(edge)
+	for edgeID in toRemove:
+		model.removeEdge(edgeID)
 	model.endUpdate()
 	for id in model.getTrackModel().trackIDs(False):
 		model.setTrackVisibility(id, True)
+	print([maxFrameGap, altLinkCost, linkMax, gapCloseMax])
 	print(trackingQuality)
 	return trackmate, trackingQuality
 
@@ -362,7 +378,7 @@ def calcDirMig(model):
 				
 def outputTrackData(model, sm, ds, wkdir):
 	# Save spot, edge, and track statistics
-	trackTableView = TrackTableView(model, sm, ds, "/Users/ktrang/Documents/tm_test/A2_1_short.tif")
+	trackTableView = TrackTableView(model, sm, ds, "/Users/ktrang/Documents/tm_test/A2_1.tif")
 	trackTableView.getSpotTable().getPanel()
 	trackTableView.getSpotTable().exportToCsv(File(os.path.join(wkdir,"spotData.csv")))
 	trackTableView.getEdgeTable().exportToCsv(File(os.path.join(wkdir,"edgeData.csv")))
@@ -402,10 +418,10 @@ def cpProcess(imp, cpExe, cpModel):
 	#linkMax = [5.0, 10.0, 15.0, 20.0]
 	#gapCloseMax = [20.0, 40.0, 60.0, 80.0, 100.0, 120.0]
 	# Test values
-	maxFrameGap = [2]
-	altLinkCost = [0.2, 0.4]
-	linkMax = [5.0]
-	gapCloseMax = [20.0]
+	maxFrameGap = [4, 6, 8]
+	altLinkCost = [0.2, 0.4, 0.6]
+	linkMax = [5.0, 10.0]
+	gapCloseMax = [20.0, 80.0, 120.0]
 	
 	# Determine tracker settings and instantiate trackmate
 	bestTrackingQuality = 0
@@ -421,25 +437,13 @@ def cpProcess(imp, cpExe, cpModel):
 					if trackingQuality > bestTrackingQuality:
 						bestTrackingQuality = trackingQuality
 						bestTrackerVal = [maxFrameGapVal, altLinkCostVal, linkMaxVal, gapCloseMaxVal]
-					print [maxFrameGapVal, altLinkCostVal, linkMaxVal, gapCloseMaxVal]
+	
+	print bestTrackerVal
 	
 	settings.addAllAnalyzers()
 	trackmate.computeSpotFeatures(True)
 	trackmate.computeEdgeFeatures(True)
 	trackmate.computeTrackFeatures(True)
-	
-	trim = TrimNotVisibleAction()
-	trim.execute(trackmate, SelectionModel(model), DisplaySettingsIO.readUserDefault(), WindowManager.getCurrentImage())
-	
-	# Display results
-	model = trackmate.getModel()
-	sm = SelectionModel( model )
-	ds = DisplaySettings()
-	ds = DisplaySettingsIO.readUserDefault()
-	ds.spotDisplayedAsRoi = True
-	displayer =  HyperStackDisplayer( model, sm, imp, ds )
-	displayer.render()
-	displayer.refresh()
 	
 	#https://github.com/TASBE/TASBEImageAnalytics/blob/5d6fc1a64b4c17e263451fa4252c94dc86193d14/scripts/cellStatsTracking.py
 	spotFeat = ["LR"]
@@ -478,7 +482,8 @@ def cpProcess(imp, cpExe, cpModel):
 #display_results_in_GUI(trackmate)
 #outputTrackData(model, sm, ds, wkdir)
 	# Save results
-	outputTrackDataNew(model, sm, DisplaySettingsIO.readUserDefault(), wkdir)
+	sm = SelectionModel( model )
+	outputTrackData(model, sm, DisplaySettingsIO.readUserDefault(), wkdir)
 	saveFile = TMUtils.proposeTrackMateSaveFile( settings, logger )
 
 	writer = TmXmlWriter( saveFile, logger )
@@ -490,7 +495,6 @@ def cpProcess(imp, cpExe, cpModel):
 	
 	# Display results
 	model = trackmate.getModel()
-	sm = SelectionModel( model )
 	#ds = DisplaySettings()
 	ds = DisplaySettingsIO.readUserDefault()
 	ds.spotDisplayedAsRoi = True
