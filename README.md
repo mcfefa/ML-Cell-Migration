@@ -64,7 +64,7 @@ Between videos the plugin will create basic overlay tiffs of completed tracking
 Once all input variable combinations have been tested, the Tracking_Quality table will update with tracking_quality values
 ![alt text](img/output-tracking-quality.png)
 Outputs in log to tell you it's saved a .csv of the tracking quality results
-![alt text](img/final_output)
+![alt text](img/final_output.png)
 Once finished, the Log will spit out a list of what it's created and what it's generally done
 4. The following outputs are created at the end of the process:
 - ...spots.csv: contains spot feature data from optimized tracking for the image it's named after
