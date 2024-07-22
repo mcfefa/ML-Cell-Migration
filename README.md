@@ -30,7 +30,7 @@ You're done! (With installation), feel free to move the file around in the Fiji.
 
 ## Plugin Walkthrough
 1. When running the program, the following dialog will appear:
-![alt text](user-input-window.png)
+![alt text](ML-Cell-Migration/img/user-input-window.png)
 From top to bottom, these are the requested inputs:
 **Bold names indicate required fields**
 - **Choose a directory of videos**: Hit _Browse_ to open a file explorer dialog and select a directory containing videos to be segmented.
