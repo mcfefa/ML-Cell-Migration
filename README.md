@@ -58,7 +58,7 @@ Hit **OK** once finished.
   - First image in the video directory
 3. The plugin will follow the following loop to segment, remove, and calculate to determine the prime tracking input variables for the following videos in the batch process. Below are some signposts to look out for in case you're attempting to figure out where the plugin is now.
 ![alt text](img/Tracking_Quality.png)
-![alt text](img/tracking-results)
+![alt text](img/tracking-results.png)
 Between videos the plugin will create basic overlay tiffs of completed tracking
 ![alt text](img/tracking-quality-table.png)
 Once all input variable combinations have been tested, the Tracking_Quality table will update with tracking_quality values
