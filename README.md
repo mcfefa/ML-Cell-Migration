@@ -24,7 +24,7 @@ Example data used for analysis is located in the **examples** folder. Shorter im
 2. Install [FIJI (FIJI Is Just ImageJ)](https://imagej.net/software/fiji/downloads) and [Cellpose](https://github.com/MouseLand/cellpose). If necessary, Cellpose can be installed locally without a conda environment. Ensure you have Python installed first, though.
 3. Open FIJI and go to **Plugins >> Install** or hit **Ctrl + Shift + M**. FIJI will prompt you for a file to install. Select [2DMigrationAnalysis.py](2DMigrationAnalysis.py), then select a location within the second file prompt to save the plugin. If you save it where FIJI automatically opens, it will appear under **Plugins >> 2DMigrationAnalysis**. Otherwise, it will appear elsewhere. For further documentation, look [here](https://imagej.net/plugins/).
 4. You will then be prompted to restart FIJI. Do that, then ensure that you can find the 2DMigrationAnalysis plugin by utilizing FIJI's search bar.
-![alt text](alt-open.png)
+![alt text](img/alt-open.png)
 FIJI will tell you where the plugin can be found and allow you to run it from the search results.
 You're done! (With installation), feel free to move the file around in the Fiji.app files if the location is inconvenient to you.
 
@@ -53,18 +53,18 @@ Settings will be saved between runs.
 Hit **OK** once finished.
 2. The plugin will open 3 windows:
   - Log: Will contain information about what the plugin is doing and what is being tested or tracked, but spot detection has no progress bar, so you may be waiting for a while if you have a large video or many cells in said video
-![alt text](beginning-log.png)
+![alt text](img/beginning-log.png)
   - Tracking_Quality: This table will hold the results of tracking quality calculations and be returned to the user in the form of a .csv file in the folder of the first image used to determine ideal tracking input variables.
   - First image in the video directory
 3. The plugin will follow the following loop to segment, remove, and calculate to determine the prime tracking input variables for the following videos in the batch process. Below are some signposts to look out for in case you're attempting to figure out where the plugin is now.
-![alt text](Tracking_Quality.png)
-![alt text](tracking-results)
+![alt text](img/Tracking_Quality.png)
+![alt text](img/tracking-results)
 Between videos the plugin will create basic overlay tiffs of completed tracking
-![alt text](tracking-quality-table.png)
+![alt text](img/tracking-quality-table.png)
 Once all input variable combinations have been tested, the Tracking_Quality table will update with tracking_quality values
-![alt text](output-tracking-quality.png)
+![alt text](img/output-tracking-quality.png)
 Outputs in log to tell you it's saved a .csv of the tracking quality results
-![alt text](final_output)
+![alt text](img/final_output)
 Once finished, the Log will spit out a list of what it's created and what it's generally done
 4. The following outputs are created at the end of the process:
 - ...spots.csv: contains spot feature data from optimized tracking for the image it's named after
