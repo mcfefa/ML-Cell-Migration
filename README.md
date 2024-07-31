@@ -17,6 +17,7 @@ Example data used for analysis is located in the **examples** folder. Shorter im
 - [alteredPlotTracks.mlx](alteredPlotTracks.mlx): a MATLAB live script to plot true track location and tracks from the origin from tracks .xml files
 - track-xml-examples: contains example tracks .xml files for use with the [MATLAB live script](alteredPlotTracks.mlx) for plotting tracks, requires [importTrackMateTracks.m](https://github.com/trackmate-sc/TrackMate/blob/master/scripts/importTrackMateTracks.m) file.
 - example-assay-videos: contains zipped shortened .tif image stacks for use with the main [2D migration analysis plugin](2DMigationAnalysis.py)
+- training-model-img: contains zipped file pairings of images used to train the tyk-nu_cyto3 file contained in [tyk-nu_cyto3-model.zip](tyk-nu_cyto3-model.zip). Each zipped file contains an image and its corresponding _seg.npy file to be read within the Cellpose GUI to display the corrected manual segmentation
 - img: contains image assets for the Plugin Walkthrough below
 
 ## Installation
