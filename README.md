@@ -1,6 +1,11 @@
 # ML-Cell-Migration
 A pipeline for an automated machine learning-driven assay for robust and accessible analysis of cell migration
 
+## Citation
+If you are using this code in your research, please cite [this paper](https://journals.sagepub.com/doi/full/10.1089/genbio.2024.0019): 
+
+K Trang, A Del Pino Herrera, MC Ferrall-Fairbanks (2024). Development of an Automated Machine Learning-Driven Assay for Robust and Accessible Analysis of Cell Migration. _GEN Biotech_, 3(5):311-321. doi: 10.1089/genbio.2024.0019
+
 ## Overview
 This repository contains code for an [ImageJ](https://imagej.net/software/imagej/) Jython (.py) plugin for automated analysis of 2D rectangular migration assays for robust and accessible analysis of cell migration. The code is written in [Jython](https://imagej.net/scripting/jython/) and has been tested in [FIJI (FIJI Is Just ImageJ)](https://imagej.net/software/fiji/downloads) with ImageJ version 1.54j. The plugin is dependent on an installation of [Cellpose](https://github.com/MouseLand/cellpose) for segmentation before beginning the tracking process with [TrackMate](https://imagej.net/plugins/trackmate/) (tested on v7.2.1+).
 
